@@ -5,30 +5,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.iyzico.challenge.entity.Product;
 import com.iyzico.challenge.model.request.ProductPayRequest;
+import com.iyzico.challenge.repository.ProductRepository;
 import com.iyzico.challenge.service.IyzicoPaymentService;
 import com.iyzico.challenge.service.ProductService;
 
-@WebMvcTest(PaymentController.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PaymentControllerTest {
 
-	@Autowired
 	private MockMvc mockMvc;
+	
+	@InjectMocks
+	private PaymentController paymentController;
 
-	@MockBean
+	@Mock
 	private ProductService productService;
 
-	@MockBean
+	@Mock
 	private IyzicoPaymentService paymentService;
+	
+	@Mock
+	private ProductRepository productRepository;
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		this.mockMvc = MockMvcBuilders.standaloneSetup(paymentController).build();
+	}
 
 	@Test
 	public void it_should_invoke_api_payment_endpoint() throws Exception {
@@ -38,12 +56,19 @@ public class PaymentControllerTest {
 		request.setProductId(1L);
 		request.setSoldStock(100L);
 		
+		Product product = new Product();
+		product.setId(1L);
+		product.setRemainingStockCount(1001L);
+		
 		ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String requestBody = objectWriter.writeValueAsString(request);
         
+        Mockito.when(productRepository.getOne(product.getId())).thenReturn(product);
+        Mockito.when(productService.isProductStockEnabled(Mockito.any(), Mockito.any())).thenReturn(true);
+        
         mockMvc.perform(post("/api/payment")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(requestBody))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
 	}
