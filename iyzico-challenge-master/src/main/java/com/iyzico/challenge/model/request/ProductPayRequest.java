@@ -31,5 +31,10 @@ public class ProductPayRequest {
 	public void setProductId(Long productId) {
 		this.productId = productId;
 	}
+
+	@Override
+	public String toString() {
+		return "ProductPayRequest [price=" + price + ", soldStock=" + soldStock + ", productId=" + productId + "]";
+	}
 	
 }

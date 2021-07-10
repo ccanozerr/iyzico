@@ -2,6 +2,9 @@ package com.iyzico.challenge.service;
 
 import org.springframework.stereotype.Service;
 
+import com.iyzico.challenge.model.request.BankPaymentRequest;
+import com.iyzico.challenge.model.response.BankPaymentResponse;
+
 @Service
 public class BankService {
 

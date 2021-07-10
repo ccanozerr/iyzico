@@ -1,4 +1,4 @@
-package com.iyzico.challenge.service;
+package com.iyzico.challenge.model.response;
 
 public class BankPaymentResponse {
 

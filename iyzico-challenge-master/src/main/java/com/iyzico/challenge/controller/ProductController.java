@@ -28,7 +28,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 
 @RestController
-@RequestMapping(value = ApiEndPoints.IYZICO__PRODUCT_API, produces = ApiEndPoints.RESPONSE_CONTENT_TYPE,
+@RequestMapping(value = ApiEndPoints.IYZICO_PRODUCT_API, produces = ApiEndPoints.RESPONSE_CONTENT_TYPE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
 @Api
 @SwaggerDefinition(tags = {
